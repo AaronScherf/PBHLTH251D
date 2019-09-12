@@ -1,0 +1,322 @@
+---
+title: "PBHLTH 251D HW 2"
+author: "Aaron Scherf"
+date: "September 12, 2019"
+always_allow_html: yes
+output: 
+  revealjs::revealjs_presentation: 
+    theme: simple
+    highlight: haddock
+    center: true
+    transition: slide
+    css: reveal.css
+    self_contained: true
+  slidy_presentation:
+    df_print: paged
+    slide_level: 2
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+if (!require(knitr)) install.packages('knitr')
+require("knitr")
+knitr::opts_chunk$set(echo = TRUE)
+opts_knit$set(root.dir = "C:/Users/theaa/Desktop/Data Science Pedagogy Resources/R/PBHLTH 251D/HW")
+```
+
+## Exercise 1.1 (Get started with R.)
+
+If you have not done so already,
+
+a. Install R on your computer (https://cran.rstudio.com/),
+b. Install RStudio on your computer (https://www.rstudio.com/),
+c. Register for a RPubs account (http://www.rpubs.com/), and open RStudio.
+d. Consider using RStudio Cloud instead.
+e. Install the `knitr` and `rmarkdown` packages
+f. Open a new Rmarkdown template file (`.Rmd` extension).
+g. Learn Rmarkdown and use it to answer the exercises in this chapter.
+h. Submit the exercises as a HTML link to your Rpubs.com page, Word document, or PDF document (first install the `tinytex` package).
+
+## Exercise 1.2 (Get to know your workspace.) 
+
+*Answer the following questions:*
+
+*a. What is the R workspace file on your operating system?*
+
+The workspace file contains all objects in the current R session, by default saved as an R Image file (`.Rdata`). The image file saves to the current working directory, which can be accessed with `getwd()`.
+
+*b. What is the file path to your R workspace file?*
+
+The file path to the workspace file is the current working directory:
+
+```{r, current_directory}
+getwd()
+```
+
+*c. What is the name of this workspace file?*
+
+The workspace file saves by default as an `.RData` file, which can be named by the user but defaults to the name of the current script or `.Rmd` file.
+
+*d. When you launched, which R packages loaded?*
+
+Currently loaded packages in R can be listed with the following code:
+
+```{r, packages}
+(.packages())
+```
+
+Alternatively, the `search()` function will display loaded packages along with the `.GlobalEnv` and `tools` objects.
+
+```{r, search_packages}
+search()
+```
+
+
+*e. What are the file paths to the loaded R packages?*
+
+R packages (for Windows at least) are stored in the Documents folder inside of `R/win-library` followed by the version number. In my case, the file path is `C:/Users/theaa/Documents/R/win-library/3.6`
+
+*f. List all the object in the current workspace. If there are none, create some data objects. Using one expression, remove all the objects in the current workspace.*
+
+```{r, create_object}
+example1 <- "one"
+example2 <- 2
+```
+
+```{r, list_objects}
+objects()
+```
+
+```{r, remove_objects}
+rm(list = ls())
+```
+
+
+## Exercise 1.3 (Get to know math operators.) 
+
+*Using Table 1.1, explain in words, and use R to illustrate, the difference between modulus and integer divide.*
+
+The modulus operator returns the remainder of a division operation of the two numbers, ie the value remaining after dividing by the maximum number of denominators.
+
+```{r, modulus}
+21%%5
+```
+
+The integer divide operator, by contrast, returns the number of times the numerator can divide the denominator without any remainder.
+
+```{r, integer_divide}
+21%/%5
+```
+
+By combining both functions with the original denominator we can replicate regular division.
+
+```{r, division}
+21%/%5 + 21%%5/5
+21 / 5
+```
+
+
+## Exercise 1.4 (Calculating body mass index.) 
+
+*BMI is an indicator of total body fat, which is related to the risk of disease and death. The score is valid for both men and women but it does have some limitations: it may overestimate body fat in athletes and others who have a muscular build, it may underestimate body fat in older persons and others who have lost muscle mass.*
+
+
+TABLE 1.5: Body mass index classification 
+
++--------------------+----------------------+
+| BMI                | Classification       | 
++====================+======================+
+| $<18.5$            | Underweight          | 
++--------------------+----------------------+
+| $[18.5,25)$        | Normal weight        |
++--------------------+----------------------+
+| $[25,30)$          | Overweight           |
++--------------------+----------------------+
+| $\geq 30$          | Obesity              |
++--------------------+----------------------+
+
+*Body Mass Index (BMI) is calculated from your weight in kilograms and height in meters:*
+
+\[
+BMI = \frac{kg}{m^2}
+\]
+
+\[
+1 kg \approx 2.2 lb
+\]
+
+\[
+1 m \approx 3.3 ft
+\]
+
+*Calculate the BMI for a male with weight of 155 lb and height of 5 ft 7 in.*
+
+```{r, BMI_Calculation}
+Weight_Lb <- 155
+Height_Ft <- 5 + 7/12
+Weight_Kg <- Weight_Lb / 2.2
+Height_Mt <- Height_Ft / 3.3
+BMI = Weight_Kg / Height_Mt^2
+BMI
+```
+
+
+## Exercise 1.5 (Using logarithms)
+*In mathematics, a logarithm (to base $b$) of a number $x$ is written $\log _{b}x$ and equals the exponent $y$ that satisfies $x=b^y$ . In other words,*
+
+\[
+y = log_{b}x
+\]
+
+is equivalent to
+
+\[
+x=b^y
+\]
+
+*In R, the `log` function is to the base $e$. Implement the following R code and study the graph:*
+
+```{r, log_graph}
+curve(log(x), 0, 6)
+abline(v = c(1, exp(1)), h = c(0, 1), lty = 2)
+```
+
+*What kind of generalizations can you make about the natural logarithm and its base--the number $e$?*
+
+Based on the graph, we can conclude several important properties of $e$ and the natural logarithm function:
+- The domain of the natural log function is restricted to positive real numbers.
+- The value of $\log_{e}1$ is equal to 0, due to the identity above, $1 = e^0$.
+- The value of $e^1=2.718282$, which can be found precisely using `exp(1)`, shown on the graph by the intersection of the two constant dashed lines $x = 2.718282$ and $log(x) = 1$.
+- As the value of $x$ increases, the value of $log(x)$ increasess at a decreasing rate.
+- As the value of $x$ approaches 0 from the right, the value of $log(x)$ decreases at an increasing rate.
+
+## Exercise 1.6 (Risk and risk odds)
+
+*Risk ($R$) is a probability bounded between 0 and 1. Odds is the following transformation of $R$:*
+
+\[
+Odds = \frac{R}{1-R}
+\]
+
+*Use the following code to plot the odds:*
+
+```{r, odds_plot}
+curve(x/(1-x), 0, 1)
+```
+
+*Now, use the following code to plot the $\log(odds)$:*
+
+```{r, log_odds_plot}
+curve(log(x/(1-x)), 0, 1)
+```
+
+*What kind of generalizations can you make about the \log(odds) as a transformation of risk?*
+
+Under the normal odds function, $\frac{x}{1-x}$, a risk value of 0 has an odds value of 0 and odds increase exponentially as risk increases. A log transformation of the odds function follows an S-curve, whereby a risk value of 0 has an odds value approaching negative infinity, a risk value of 0.5 has an odds value of 0, and a risk value of 1 has an odds value approaching positive infinity. The log transformation therefore allows sharper differentiation between risk values near 0.5 and centers odds around a risk value of 0.5. The symmetry of the log transformed function also allows better comparison between values equidistant from 0.5 in the positive or negative direction.
+
+
+## Exercise 1.7 (HIV transmission probabilities)
+*Review Table 1.6 and answer the questions.*
+
+
+TABLE 1.6: Estimated per-act risk (transmission probability) for acquisition of HIV, by exposure route to an infected source. Source: CDC (Centers for Disease Control and Prevention [2005](https://bookdown.org/taragonmd/phds/getting-started-with-r.html#ref-CDC2005rr5402_pmid15660015)
+
++---------------------------------------------+---------------------------+
+| Exposure route                              | Risk per 10,000 exposures | 
++=============================================+===========================+
+| Blood transfusion (BT)                      | 9,000  | 
++---------------------------------------------+--------+
+| Needle-sharing injection-drug use (IDU)     | 67     |
++---------------------------------------------+--------+
+| Receptive anal intercourse (RAI)            | 50     |
++---------------------------------------------+--------+
+| Percutaneous needle stick (PNS)             | 30     |
++---------------------------------------------+--------+
+| Receptive penile-vaginal intercourse (PRVI) | 10     |
++---------------------------------------------+--------+
+| Insertive anal intercourse (IAI)            | 6.5    |
++---------------------------------------------+--------+
+| Insertive penile-vaginal intercourse (IPVI) | 30     |
++---------------------------------------------+--------+
+| Receptive oral intersource on penis (ROI)   | 50     |
++---------------------------------------------+--------+
+| Insertive oral intercourse with penis (IOI) | 30     |
++---------------------------------------------+--------+
+
+*Use the data in Table 1.6. Assume one is HIV-negative. If the probability of infection per act is $p$, then the probability of not getting infected per act is $(1-p)$. The probability of not getting infected after 2 consecutive acts is $(1-p)^2$, and after 3 consecutive acts is $(1-p)^3$. Therefore, the probability of not getting infected after $n$ consecutive acts is $(1-p)^n$, and the probability of getting infected after $n$ consecutive acts is $1-(1-p)^n$. For each non-blood transfusion transmission probability (per act risk) in Table 1.6, calculate the cumulative risk of being infected after one year (365 days) if one carries out the same act once daily for one year with an HIV-infected partner. Do these cumulative risks make intuitive sense? Why or why not?*
+
+```{r, HIV_Risk}
+n = 365
+hiv_risk <- function(p,n) 1-(1-p)^n
+Exp_Route <- c("BT","IDU","RAI","PNS","RPVI","IAI","IPVI","ROI","IOI")
+Risk <- c(9000,67,50,30,10,6.5,5,1,0.5)
+Risk_Table <- data.frame(Exp_Route,Risk)
+Risk_per_10k <- Risk_Table
+Risk_per_10k$Risk <- Risk_per_10k$Risk/10000
+Year_Risk <- Risk_per_10k
+Year_Risk$Risk <- hiv_risk(p=Year_Risk$Risk,n=n)
+kable(Year_Risk, caption = "Cumulative Risk by Exposure Route after 365 Exposures")
+```
+
+These cumulative risks make sense given the risk per 10,000 exposures values in the table above. Blood transfusions have a 90% change of transmission per act, so it is unsurprising that after 365 exposures the probability of transmission is 1 (though I'm not certain why anyone would transfuse blood with a partner on a daily basis). I am somewhat surprised that receptive anal intercourse has nearly triple the cumulative risk of receptive penile-vaginal intercourse, though it does explain the importance of men who have sex with men (MSM) as a vulnerable population in HIV epidemic control. The nearly doubled rate of transmission for receptive penile-vaginal intercourse compared to insertive penile-vaginal intercourse also corresponds to the increased risk and subsequent prevalence among (heterosexual) women.
+
+
+## Exercise 1.8 (Sourcing files and sinking log files)
+*The `source` function in R is used to "source" (read in) ASCII text files. Take a group of R commands that worked from a previous problem above and paste them into an ASCII text file and save it with the name `job01.R`. Then from R command line, source the file. Here is how it looked on a Linux computer running R:*
+
+```{r, source_file}
+source("job01.R")
+```
+
+*Describe what happened. Now, set `echo` option to `TRUE`.*
+
+Within RStudio, the code chunk ran the commands inside of the `job01.R` file, which plotted the log transformed odds function.
+
+```{r, source_file_echo}
+source("job01.R", echo = TRUE)
+```
+
+*Describe what happened. To improve your understanding read the help file on the `source` function.*
+
+Setting `echo=TRUE` runs the same command but also provides a window view with the underlying code from the ASCII text `.R` file.
+
+*Now run the `source` again (without and with `echo = TRUE`) but each time create a log file using the `sink` function. Create two log files: `job01.log1a` and `job01.log1b`.*
+
+```{r, sink_source}
+sink("job01.log1a")
+source("job01.R")
+sink() #closes connection
+```
+
+```{r, sink_source_echo}
+sink("job01.log1b")
+source("job01.R", echo = TRUE)
+sink() #closes connection
+```
+
+*Examine the log files and describe what happened.*
+
+The first log file `job01.log1a` is empty while the second `job01.log1b` contains the code from the `job01.R` file. This is because the second log file used the `echo=TRUE` argument so that the `source()` function returns the commands.
+
+*Create a new job file (`job02.R`) with the following code:*
+
+```{r, job_code}
+n <- 365
+per.act.risk <- c(0.5, 1, 5, 6.5, 10, 30, 50, 67)/10000
+risks <- 1-(1-per.act.risk)^n
+show(risks)
+```
+
+
+*Source this file at the R command line and describe what happened.*
+
+
+```{r, source_job2}
+source("job02.R", echo = TRUE)
+```
+
+The code within the `job02.R` file creates an object `n` equal to 365, divides a vector of 8 numbers by 10,000 and saves them as `per.act.risk`, uses these values as inputs into the cumulative risk function $1-(1-p)^n$ and saves them as a new vector object `risks`, then displays these values using the `show()` function. The resulting values are the cumulative risks of the values after 365 occurances, corresponding to our previous calculation of cumulative risk of transmission for HIV.
